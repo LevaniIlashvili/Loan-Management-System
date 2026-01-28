@@ -1,0 +1,41 @@
+USE lmsdb;
+
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Clients')
+BEGIN
+	CREATE TABLE Clients (
+		Id UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
+		FirstName NVARCHAR(50) NOT NULL,
+		LastName NVARCHAR(50) NOT NULL,
+		PersonalNumber NVARCHAR(20) NOT NULL UNIQUE,
+		MonthlyIncome DECIMAL(18,2) NOT NULL,
+		CreatedAt DATETIMEOFFSET(7) NOT NULL DEFAULT GETDATE()
+	);
+END
+
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LoanApplications')
+BEGIN
+	CREATE TABLE LoanApplications (
+		Id UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
+		ClientId UNIQUEIDENTIFIER NOT NULL,
+		Amount DECIMAL(18,2) NOT NULL,
+		TermInMonths INT NOT NULL,
+		LoanStatus TINYINT NOT NULL,
+		CreatedAt DATETIMEOFFSET(7) NOT NULL DEFAULT GETDATE(),
+
+		CONSTRAINT FK_LoanApplications_Clients FOREIGN KEY(ClientId)
+			REFERENCES Clients(Id)
+	);
+END
+
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'RepaymentSchedules')
+BEGIN
+	CREATE TABLE RepaymentSchedules (
+		Id UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
+		LoanApplicationId UNIQUEIDENTIFIER NOT NULL,
+		DueDate DATETIMEOFFSET(7) NOT NULL,
+		AmountToPay DECIMAL(18,2) NOT NULL,
+
+		CONSTRAINT FK_RepaymentSchedules_LoanApplications FOREIGN KEY(LoanApplicationId)
+			REFERENCES LoanApplications(Id)
+	);
+END

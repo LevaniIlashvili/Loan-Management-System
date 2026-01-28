@@ -1,0 +1,143 @@
+﻿@model LoanApplicationDetailsViewModel
+
+@{
+    ViewData["Title"] = "Loan Details";
+}
+
+@{
+    var errorMessage = TempData["ErrorMessage"] ?? ViewBag.ErrorMessage;
+    var successMessage = TempData["SuccessMessage"];
+}
+
+@if (successMessage != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @successMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @errorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm mb-2">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+        <h2>Loan Details #@Model.Id.ToString().Substring(0, 8)</h2>
+    </div>
+    <div>
+        <span class="badge @(Model.LoanStatus.ToString() == "Approved" ? "bg-success" : Model.LoanStatus.ToString() == "Rejected" ? "bg-danger" : "bg-warning") p-3 fs-6">
+            Status: @Model.LoanStatus.ToString()
+        </span>
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Loan Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="text-muted d-block">Total Amount</label>
+                    <span class="h4">@Model.Amount.ToString("N2") ₾</span>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted d-block">Loan Term</label>
+                    <span class="h5">@Model.TermInMonths Months</span>
+                </div>
+                <div class="mb-0">
+                    <label class="text-muted d-block">Created At</label>
+                    <span>@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.LoanStatus.ToString() == "Pending")
+        {
+            <div class="card border-primary shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Admin Actions</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p class="small text-muted mb-3">Review this application and choose an action.</p>
+                    <div class="d-grid gap-2">
+                        <form asp-action="Approve" asp-route-id="@Model.Id" method="post">
+                            <button type="submit" class="btn btn-success w-100">Approve Application</button>
+                        </form>
+                        <form asp-action="Reject" asp-route-id="@Model.Id" method="post">
+                            <button type="submit" class="btn btn-outline-danger w-100">Reject Application</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Repayment Schedule</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.RepaymentSchedules != null && Model.RepaymentSchedules.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th>Due Date</th>
+                                    <th class="text-end">Amount to Pay</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int i = 1;
+                                }
+                                @foreach (var item in Model.RepaymentSchedules)
+                                {
+                                    <tr>
+                                        <td class="text-center text-muted">@(i++)</td>
+                                        <td><strong>@item.DueDate.ToString("MMM dd, yyyy")</strong></td>
+                                        <td class="text-end">@item.AmountToPay.ToString("N2") ₾</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="2"><strong>Total to Repay:</strong></td>
+                                    <td class="text-end"><strong>@Model.RepaymentSchedules.Sum(x => x.AmountToPay).ToString("N2") ₾</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-calendar-x text-muted display-4"></i>
+                        @if(Model.LoanStatus.ToString() == "Pending")
+                        {
+                            <p class="mt-3 text-muted">No schedule generated yet. Approve the loan to see the breakdown</p>
+                        } else
+                        {
+                            <p class="mt-3 text-muted">Loan was rejected</p>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

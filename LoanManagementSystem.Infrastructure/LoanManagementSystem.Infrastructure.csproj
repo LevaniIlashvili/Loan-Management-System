@@ -7,6 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Database\00_CreateDatabase.sql" />
+    <None Remove="Database\01_CreateTables.sql" />
+    <None Remove="Database\02_AddIndexes.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Database\00_CreateDatabase.sql" />
+    <EmbeddedResource Include="Database\01_CreateTables.sql" />
+    <EmbeddedResource Include="Database\02_AddIndexes.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LoanManagementSystem.Application\LoanManagementSystem.Application.csproj" />
     <ProjectReference Include="..\LoanManagementSystem.Domain\LoanManagementSystem.Domain.csproj" />
   </ItemGroup>

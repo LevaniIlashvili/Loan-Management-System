@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  lms.db: 
+    image: mcr.microsoft.com/mssql/server:2022-latest 
+    restart: always 
+    environment: 
+      ACCEPT_EULA: "Y" 
+      MSSQL_SA_PASSWORD: "Admin123!" 
+      MSSQL_PID: "Express" 
+    ports:
+        - "1433:1433" 
+    volumes: 
+        - lmsdata:/var/opt/mssql
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "Admin123!", "-Q", "SELECT 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  lms.api:
+    build:
+      context: .
+      dockerfile: LoanManagementSystem.Api/Dockerfile
+    container_name: lms.api
+    restart: always
+    depends_on:
+      - lms.db
+    environment:
+      ConnectionStrings__Default: "Server=lms.db,1433;Database=lmsdb;User Id=sa;Password=Admin123!;TrustServerCertificate=True"
+    ports:
+      - "5000:8080"
+
+  lms.web:
+    build:
+      context: .
+      dockerfile: LoanManagementSystem.Web/Dockerfile
+    container_name: lms.web
+    restart: always
+    depends_on:
+      - lms.api
+    environment:
+      ApiBaseUrl: "http://lms.api:8080"
+    ports:
+      - "5001:8080"
+
+volumes:
+  lmsdata:

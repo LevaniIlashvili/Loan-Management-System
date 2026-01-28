@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\LoanManagementSystem.Application\LoanManagementSystem.Application.csproj" />
     <ProjectReference Include="..\LoanManagementSystem.Domain\LoanManagementSystem.Domain.csproj" />
     <ProjectReference Include="..\LoanManagementSystem.Infrastructure\LoanManagementSystem.Infrastructure.csproj" />

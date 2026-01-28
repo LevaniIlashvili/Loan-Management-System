@@ -1,6 +1,11 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="docker-compose.yml" />
+  </Folder>
   <Project Path="LoanManagementSystem.Api/LoanManagementSystem.Api.csproj" />
   <Project Path="LoanManagementSystem.Application/LoanManagementSystem.Application.csproj" />
   <Project Path="LoanManagementSystem.Domain/LoanManagementSystem.Domain.csproj" />
   <Project Path="LoanManagementSystem.Infrastructure/LoanManagementSystem.Infrastructure.csproj" />
+  <Project Path="LoanManagementSystem.Web/LoanManagementSystem.Web.csproj" Id="1a914039-b831-4cef-b701-a2545e9e8c4e" />
 </Solution>
