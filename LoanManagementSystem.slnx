@@ -2,6 +2,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
     <File Path="docker-compose.yml" />
+    <File Path="README.md" />
   </Folder>
   <Project Path="LoanManagementSystem.Api/LoanManagementSystem.Api.csproj" />
   <Project Path="LoanManagementSystem.Application/LoanManagementSystem.Application.csproj" />
